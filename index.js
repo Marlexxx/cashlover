@@ -23,7 +23,8 @@ const CHATTERS = {
   '9':  { name: 'Justin',      channelId: '1475713894142972036' },
   '10': { name: 'Rozen',       channelId: '1475713925227216916' },
   '11': { name: 'Manel',       channelId: '1475713960287146128' },
-  '12': { name: 'Salomon',     channelId: '1475713987973877886' }
+  '12': { name: 'Salomon',     channelId: '1475713987973877886' },
+  '13': { name: 'Canal', channelId: '1475722814320283812' }
 };
 
 const SALES_FILE = 'sales.json';
