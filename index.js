@@ -44,7 +44,7 @@ client.on('ready', () => {
 
 client.on('messageCreate', async (message) => {
   if (message.channelId !== SALES_CHANNEL_ID) return;
-  if (!message.content.includes('Nouvelle vente Dropp')) return;
+ if (!message.content.includes('New payment received')) return;
   if (!message.webhookId) return;
 
   const rows = [];
