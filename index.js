@@ -12,7 +12,7 @@ const client = new Client({
 const SALES_CHANNEL_ID = '1475643785307492557';
 
 const CHATTERS = {
-  '1':  { name: 'Daniel',      channelId: '147571358675107841' },
+  '1':  { name: 'Daniel', channelId: '1475713586751078410' },
   '2':  { name: 'Moucheflick', channelId: '1475713536587206788' },
   '3':  { name: 'Dim Codjo',   channelId: '1475713663838195826' },
   '4':  { name: 'Donas',       channelId: '1475713693764288717' },
