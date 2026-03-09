@@ -1,6 +1,5 @@
 const { Client, GatewayIntentBits, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const fs = require('fs');
-
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -8,37 +7,30 @@ const client = new Client({
     GatewayIntentBits.MessageContent
   ]
 });
-
 const SALES_CHANNEL_ID = '1475643785307492557';
-
 const CHATTERS = {
   '1': { name: 'Daniel',  channelId: '1475713586751078410' },
   '2': { name: 'Hélène',  channelId: '1475713792967970980' },
   '3': { name: 'Rozen',   channelId: '1475713925227216916' },
-  '4': { name: 'Temad',   channelId: '1480372709496983621' }
+  '4': { name: 'Temad',   channelId: '1480372709496983621' },
+  '5': { name: 'Canal',   channelId: '1475722814320283812' }
 };
-
 const SALES_FILE = 'sales.json';
-
 function loadSales() {
   if (fs.existsSync(SALES_FILE)) return JSON.parse(fs.readFileSync(SALES_FILE, 'utf8'));
   return [];
 }
-
 function saveSales(sales) {
   fs.writeFileSync(SALES_FILE, JSON.stringify(sales, null, 2));
 }
-
 client.on('ready', () => {
   console.log(`Bot connecté : ${client.user.tag}`);
   scheduleWeeklyRecap();
 });
-
 client.on('messageCreate', async (message) => {
   if (message.channelId !== SALES_CHANNEL_ID) return;
   if (!message.content.includes('New payment received')) return;
   if (!message.webhookId) return;
-
   const rows = [];
   const keys = Object.keys(CHATTERS);
   for (let i = 0; i < keys.length; i += 4) {
@@ -53,26 +45,20 @@ client.on('messageCreate', async (message) => {
     });
     rows.push(row);
   }
-
   await message.reply({ content: '👆 Qui claim cette vente ?', components: rows });
 });
-
 client.on('interactionCreate', async (interaction) => {
   if (!interaction.isButton()) return;
   const parts = interaction.customId.split('_');
   if (parts[0] !== 'claim') return;
-
   const chatterId = parts[1];
   const messageId = parts[2];
   const chatter = CHATTERS[chatterId];
   if (!chatter) return;
-
   const originalMessage = await interaction.channel.messages.fetch(messageId);
   const content = originalMessage.content;
-
   const match = content.match(/\*\*Montant :\*\* ([\d.,]+ EUR)/);
   const montant = match ? match[1] : 'inconnu';
-
   const sales = loadSales();
   sales.push({
     chatterName: chatter.name,
@@ -80,13 +66,10 @@ client.on('interactionCreate', async (interaction) => {
     date: new Date().toISOString()
   });
   saveSales(sales);
-
   const chatterChannel = await client.channels.fetch(chatter.channelId);
   await chatterChannel.send(`✅ Vente claimée par **${chatter.name}** !\n${content}`);
-
   await interaction.update({ content: `✅ Claimée par **${chatter.name}** !`, components: [] });
 });
-
 function scheduleWeeklyRecap() {
   setInterval(async () => {
     const now = new Date();
@@ -94,7 +77,6 @@ function scheduleWeeklyRecap() {
       const sales = loadSales();
       const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
       const weeklySales = sales.filter(s => new Date(s.date) > oneWeekAgo);
-
       const recap = {};
       weeklySales.forEach(sale => {
         if (!recap[sale.chatterName]) recap[sale.chatterName] = { count: 0, total: 0 };
@@ -102,16 +84,13 @@ function scheduleWeeklyRecap() {
         const amount = parseFloat(sale.montant.replace(',', '.'));
         if (!isNaN(amount)) recap[sale.chatterName].total += amount;
       });
-
       let msg = '📊 **Récap hebdomadaire des ventes**\n\n';
       Object.entries(recap).sort((a, b) => b[1].total - a[1].total).forEach(([name, data]) => {
         msg += `**${name}** : ${data.count} vente(s) → ${data.total.toFixed(2)} EUR\n`;
       });
-
       const salesChannel = await client.channels.fetch(SALES_CHANNEL_ID);
       await salesChannel.send(msg);
     }
   }, 5 * 60 * 1000);
 }
-
 client.login(process.env.DISCORD_TOKEN);
