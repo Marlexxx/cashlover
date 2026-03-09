@@ -12,19 +12,10 @@ const client = new Client({
 const SALES_CHANNEL_ID = '1475643785307492557';
 
 const CHATTERS = {
-  '1':  { name: 'Daniel', channelId: '1475713586751078410' },
-  '2':  { name: 'Moucheflick', channelId: '1475713536587206788' },
-  '3':  { name: 'Dim Codjo',   channelId: '1475713663838195826' },
-  '4':  { name: 'Donas',       channelId: '1475713693764288717' },
-  '5':  { name: 'Elodie',      channelId: '1475713722122108969' },
-  '6':  { name: 'François',    channelId: '1475713754346815559' },
-  '7':  { name: 'Hélène',      channelId: '1475713792967970980' },
-  '8':  { name: 'Junior',      channelId: '1475713819220250674' },
-  '9':  { name: 'Justin',      channelId: '1475713894142972036' },
-  '10': { name: 'Rozen',       channelId: '1475713925227216916' },
-  '11': { name: 'Manel',       channelId: '1475713960287146128' },
-  '12': { name: 'Salomon',     channelId: '1475713987973877886' },
-  '13': { name: 'Canal', channelId: '1475722814320283812' }
+  '1': { name: 'Daniel',  channelId: '1475713586751078410' },
+  '2': { name: 'Hélène',  channelId: '1475713792967970980' },
+  '3': { name: 'Rozen',   channelId: '1475713925227216916' },
+  '4': { name: 'Temad',   channelId: '1480372709496983621' }
 };
 
 const SALES_FILE = 'sales.json';
@@ -45,7 +36,7 @@ client.on('ready', () => {
 
 client.on('messageCreate', async (message) => {
   if (message.channelId !== SALES_CHANNEL_ID) return;
- if (!message.content.includes('New payment received')) return;
+  if (!message.content.includes('New payment received')) return;
   if (!message.webhookId) return;
 
   const rows = [];
